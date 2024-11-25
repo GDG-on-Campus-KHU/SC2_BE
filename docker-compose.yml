@@ -1,0 +1,10 @@
+services:
+  app:
+    image: sc2-server
+    build:
+      context: .
+      target: dev
+    environment:
+      PORT: 8080
+    ports:
+      - "8080:8080"
