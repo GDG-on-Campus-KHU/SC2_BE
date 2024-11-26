@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/GDG-on-Campus-KHU/SC2_BE/docs"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/controllers"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -17,6 +18,7 @@ func main() {
 		eg := v1.Group("/example")
 		{
 			eg.GET("/helloworld", Helloworld)
+			eg.GET("/search", controllers.QuerySearch)
 		}
 	}
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

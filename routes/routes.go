@@ -1,1 +1,5 @@
 package routes
+
+import(
+	"fmt"
+)
