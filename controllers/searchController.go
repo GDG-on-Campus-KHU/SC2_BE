@@ -14,13 +14,13 @@ import (
 
 type NaverSearchResponse struct {
     Items []struct {
-        Title       string `json:"title"`
+        Title           string `json:"title"`
         Category        string `json:"category"`
-        Description string `json:"description"`
-        Telephone     string `json:"telephone"`
-        RoadAddress string `json:"roadAddress"`
-        Mapx        string `json:"mapx"`
-        Mapy        string `json:"mapy"`
+        Description     string `json:"description"`
+        Telephone       string `json:"telephone"`
+        RoadAddress     string `json:"roadAddress"`
+        Mapx            string `json:"mapx"`
+        Mapy            string `json:"mapy"`
     } `json:"items"`
 }
 

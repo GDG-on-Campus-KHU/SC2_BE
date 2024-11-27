@@ -1,31 +1,16 @@
 package main
 
 import (
-	"github.com/GDG-on-Campus-KHU/SC2_BE/docs"
-	"github.com/GDG-on-Campus-KHU/SC2_BE/controllers"
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"net/http"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/routes"
+	"log"
+	"fmt"
 )
 
-// test
 func main() {
-	r := gin.Default()
-	docs.SwaggerInfo.BasePath = "/api/v1"
-	v1 := r.Group("/api/v1")
-	{
-		eg := v1.Group("/example")
-		{
-			eg.GET("/helloworld", Helloworld)
-			eg.GET("/search", controllers.QuerySearch)
-		}
-	}
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	r.Run(":8080")
-}
+	r := routes.Routes()
+	
+	port := 8080
 
-// A get function which returns a hello world string by json
-func Helloworld(g *gin.Context) {
-	g.JSON(http.StatusOK, "helloworld")
+	log.Printf("Server is running on port: %d", port)
+	r.Run(fmt.Sprintf(":%d", port))
 }
