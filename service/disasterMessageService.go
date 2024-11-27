@@ -6,16 +6,24 @@ import (
 	"github.com/GDG-on-Campus-KHU/SC2_BE/models"
 	"github.com/go-resty/resty/v2"
 	"log"
+	"os"
 	"time"
 )
 
 const (
 	BaseURL     = "https://www.safetydata.go.kr/V2/api/DSSP-IF-00247"
-	ServiceKey  = "72ZBE332C1399B51" // 발급받은 서비스키
 	PollingTime = 30 * time.Second
 )
 
 var lastSN string // 마지막으로 처리한 재난 문자의 SN(일련번호)
+
+func GetServiceKey() string {
+	key := os.Getenv("SERVICE_KEY")
+	if key == "" {
+		log.Fatal("SERVICE_KEY is not set in environment variables")
+	}
+	return key
+}
 
 // fetchLatestMessage: 최신 데이터를 가져오는 함수
 func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
@@ -25,11 +33,11 @@ func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
 	resp, err := client.R().
 		SetHeader("Accept", "application/json").
 		SetQueryParams(map[string]string{
-			"serviceKey": ServiceKey,
+			"serviceKey": GetServiceKey(),
 			"numOfRows":  "1", // 하나의 데이터만 요청
 			"pageNo":     "1",
 			"returnType": "json",
-			"crtDt":      "2024.11.27",
+			"crtDt":      time.Now().Format("20241127"),
 		}).
 		Get(BaseURL)
 
