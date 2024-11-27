@@ -1,0 +1,11 @@
+name: 📚 Docs
+description: Describe this issue template's purpose here.
+title: "[DOCS] <title>"
+labels: ["Documentation"]
+body:
+  - type: textarea
+    attributes:
+      label: Documentation Details
+      description: Describe the updates needed for the documentation.
+    validations:
+      required: true
