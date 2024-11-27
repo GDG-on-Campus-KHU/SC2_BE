@@ -1,16 +1,17 @@
 package routes
 
-import(
-	"github.com/gin-gonic/gin"
+import (
 	"github.com/GDG-on-Campus-KHU/SC2_BE/controllers"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/docs"
+	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func Routes() *gin.Engine{
+func Routes() *gin.Engine {
 	router := gin.Default()
 
+	// 스웨거 라우트
 	docs.SwaggerInfo.BasePath = "/api/v1"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -20,5 +21,12 @@ func Routes() *gin.Engine{
 		mapRoutes.GET("/search", controllers.QuerySearch)
 		//mapRoutes.GET("/navigation", controllers.QuerySearch)
 	}
+
+	// 알림 라우트
+	router.POST("/api/send", controllers.SendNotificationHandler)
+
+	// 재난 알림 문자 라우트
+	router.GET("/api/disaster-messages", controllers.GetDisasterMessagesHandler)
+
 	return router
 }

@@ -1,0 +1,11 @@
+name: 🌲 Chore
+description: Describe this issue template's purpose here.
+title: "[CHORE] <title>"
+labels: ["Chore"]
+body:
+  - type: textarea
+    attributes:
+      label: Task Description
+      description: Provide details about the maintenance or administrative task.
+    validations:
+      required: true

@@ -1,0 +1,11 @@
+name: ♻️ Refactor
+description: Describe this issue template's purpose here.
+title: "[REFACTOR] <title>"
+labels: ["Refactor"]
+body:
+  - type: textarea
+    attributes:
+      label: Refactoring Details
+      description: Describe which parts need to be refactored and why.
+    validations:
+      required: true
