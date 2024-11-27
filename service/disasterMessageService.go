@@ -29,7 +29,7 @@ func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
 			"numOfRows":  "1", // 하나의 데이터만 요청
 			"pageNo":     "1",
 			"returnType": "json",
-			"crtDt":      time.Now().UTC().Format(time.RFC3339),
+			"crtDt":      "2024.11.27",
 		}).
 		Get(BaseURL)
 
@@ -63,6 +63,8 @@ func PollForUpdates() {
 	ticker := time.NewTicker(PollingTime) // 주기 설정
 	defer ticker.Stop()
 
+	log.Println("Background polling for disaster messages started...")
+
 	for range ticker.C {
 		log.Println("Checking for updates from Disaster Message API...")
 		message, err := FetchLatestDisasterMessage()
@@ -94,7 +96,7 @@ func PollForUpdates() {
 func processNewMessage(message *models.DisasterMessage) {
 	// 메시지가 nil인지 확인
 	if message == nil {
-		log.Println("Received nil message. Skipping processing.")
+		log.Println("No message to process.")
 		return
 	}
 
