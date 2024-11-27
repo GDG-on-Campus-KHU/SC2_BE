@@ -7,33 +7,26 @@ import (
     "net/http"
     "net/url"
 	"os"
-    "log"
-	"github.com/joho/godotenv"
     "github.com/gin-gonic/gin"
 )
 
 type NaverSearchResponse struct {
-    Items []struct {
-        Title           string `json:"title"`
-        Category        string `json:"category"`
-        Description     string `json:"description"`
-        Telephone       string `json:"telephone"`
-        RoadAddress     string `json:"roadAddress"`
-        Mapx            string `json:"mapx"`
-        Mapy            string `json:"mapy"`
-    } `json:"items"`
+    Items []SearchItem `json:"items"`
+}
+
+type SearchItem struct {
+    Title       string `json:"title"`
+    Category    string `json:"category"`
+    Description string `json:"description"`
+    Telephone   string `json:"telephone"`
+    RoadAddress string `json:"roadAddress"`
+    Mapx        string `json:"mapx"`
+    Mapy        string `json:"mapy"`
 }
 
 func NaverSearch(query string, display int) (*NaverSearchResponse, error) {
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatal("Error loading .env file")
-    }
     ClientID := os.Getenv("Naver_Client_ID")
     ClientSecret := os.Getenv("Naver_Secret")
-
-    fmt.Println(ClientID)
-    fmt.Println(ClientSecret)
 
     encodedQuery := url.QueryEscape(query)
     url := fmt.Sprintf("https://openapi.naver.com/v1/search/local.json?query=%s&display=%d", encodedQuery, display)
@@ -74,7 +67,7 @@ func NaverSearch(query string, display int) (*NaverSearchResponse, error) {
     return &searchResponse, nil
 }
 
-func QuerySearch(c *gin.Context) {
+func NaverSearchHandler(c *gin.Context) {
     query := c.Query("query") // URL 파라미터에서 쿼리 가져오기
     display := 5
     result, err := NaverSearch(query, display)
