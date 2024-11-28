@@ -11,14 +11,8 @@ import (
     "strings"
     "github.com/gin-gonic/gin"
     "github.com/GDG-on-Campus-KHU/SC2_BE/models"
-    "go.mongodb.org/mongo-driver/mongo"
+    "github.com/GDG-on-Campus-KHU/SC2_BE/db"
 )
-
-var mongoClient *mongo.Client
-
-func SetMongoClient(client *mongo.Client) {
-    mongoClient = client
-}
 
 // HTML 태그 제거 함수
 func removeHTMLTags(str string) string {
@@ -84,12 +78,11 @@ func NaverSearch(query string, display int) (*NaverSearchResponse, error) {
     return &searchResponse, nil
 }
 
-func saveSearchResults(searchResponse *NaverSearchResponse) error{
-    if mongoClient == nil {
+func saveSearchResults(searchResponse *NaverSearchResponse) error {
+    if db.GetMongoClient() == nil {
         return fmt.Errorf("MongoDB client not initialized")
     }
-
-    collection := mongoClient.Database("SC2_DB").Collection("placeList")
+    collection := db.GetMongoClient().Database("SC2_DB").Collection("placeList")
 
     for _, item := range searchResponse.Items {
         location := models.Location{
@@ -144,12 +137,12 @@ func NaverSearchHandler(c *gin.Context) {
 }
 
 func DeleteAllPlacesHandler(c *gin.Context) {
-    if mongoClient == nil {
+    if db.GetMongoClient() == nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "MongoDB client not initialized"})
         return
     }
 
-    collection := mongoClient.Database("SC2_DB").Collection("placeList")
+    collection := db.GetMongoClient().Database("SC2_DB").Collection("placeList")
 
     result, err := collection.DeleteMany(context.TODO(), struct{}{})
     if err != nil {

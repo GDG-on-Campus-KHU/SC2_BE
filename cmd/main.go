@@ -6,7 +6,6 @@ import (
 	"github.com/GDG-on-Campus-KHU/SC2_BE/routes"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/service"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
-	"github.com/GDG-on-Campus-KHU/SC2_BE/controllers"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -28,7 +27,7 @@ func main() {
 
 	// MongoDB 연결
     client, err := db.ConnectDB()
-	controllers.SetMongoClient(client)
+	db.SetMongoClient(client)
     if err != nil {
         log.Fatal(err)
     }
