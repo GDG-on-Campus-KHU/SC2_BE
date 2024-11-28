@@ -27,7 +27,7 @@ func GetServiceKey() string {
 	return key
 }
 
-// fetchLatestMessage: 최신 데이터를 가져오는 함수
+// API를 호출해서 재난 안전 문자 반환
 func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
 	client := resty.New()
 
@@ -82,13 +82,7 @@ func PollForUpdates() {
 			log.Printf("Error fetching latest disaster message: %v", err)
 			continue
 		}
-
-		// 메시지가 없는 경우 처리
-		if message == nil {
-			log.Println("No new disaster message found.")
-			continue
-		}
-
+		// 새 메시지가 없는 경우
 		if message.SN == lastSN {
 			log.Println("No new updates.")
 			continue
@@ -103,15 +97,23 @@ func PollForUpdates() {
 	}
 }
 
+// 새로운 재난 안전 문자 데이터 처리
 func processNewMessage(message *models.DisasterMessage) {
-	// 메시지가 nil인지 확인
+	// 1. 메시지가 nil인지 확인
 	if message == nil {
 		log.Println("No message to process.")
 		return
 	}
 
-	// 새 메시지 처리 로직
-	log.Printf("Processing new disaster message: %v\n", message)
+	// 2. AI 모델에 메시지 전송하고 response를 받음
+	response, err := SendDisasterMessage(*message)
+	if err != nil {
+		log.Printf("Error sending disaster message: %v", err)
+		return
+	}
+
+	// 3. AI 응답 데이터를 푸시 알림으로 처리
+	SendNotification(response.PushAlarming)
 }
 
 // AI 모델에 재난 문자 request로 전송

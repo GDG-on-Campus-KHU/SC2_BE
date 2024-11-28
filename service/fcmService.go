@@ -4,12 +4,11 @@ import (
 	"context"
 	"firebase.google.com/go/v4/messaging"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/config"
-	"github.com/GDG-on-Campus-KHU/SC2_BE/models"
 	"log"
 )
 
 // FCM 메시지 전송
-func SendNotification(token string, title string, message *models.DisasterMessage) error {
+func SendNotification(body string) error {
 	client, err := config.FirebaseApp.Messaging(context.Background())
 	if err != nil {
 		log.Printf("FCM 클라이언트 초기화 실패: %v", err)
@@ -20,8 +19,8 @@ func SendNotification(token string, title string, message *models.DisasterMessag
 	fcmMessage := &messaging.Message{
 		Token: token,
 		Notification: &messaging.Notification{
-			Title: title,
-			Body:  message.MSG_CN,
+			Title: "재난 안전",
+			Body:  body,
 		},
 	}
 

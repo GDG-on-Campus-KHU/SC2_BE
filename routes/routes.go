@@ -24,6 +24,7 @@ func Routes() *gin.Engine {
 		mapRoutes.GET("/delete", db.DeleteAllDocument)
 	}
 
+	router.POST("/api/register-token", controllers.RegisterTokenHandler)
 	// 재난 알림 문자 라우트
 	router.GET("/api/disaster-messages", controllers.GetDisasterMessagesHandler)
 

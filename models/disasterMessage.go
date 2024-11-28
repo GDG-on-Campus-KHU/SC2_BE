@@ -21,11 +21,12 @@ type DisasterResponse struct {
 
 // 재난 응답 구조체
 type DisasterGuideResponse struct {
-	PushNotification string         `json:"푸시 알림 내용"`
-	CongestionInfo   CongestionInfo `json:"혼잡도정보"`
-	Radius           float64        `json:"재난반경"`
-	ActionGuides     []ActionGuide  `json:"행동요령"`
+	PushAlarming   string         `json:"push_alarming"`
+	Congestion     CongestionInfo `json:"congestion"`
+	DisasterRadius float64        `json:"disaster_radius"`
+	ActionPlan     []ActionPlan   `json:"action_plan"`
 }
+
 type CongestionInfo struct {
 	AreaName        string `json:"area_nm"`
 	LivePopulation  *int   `json:"live_ppltn_stts"` // Null 값을 허용하기 위해 포인터 사용
@@ -42,7 +43,7 @@ type CongestionInfo struct {
 }
 
 // 행동 요령 구조체 정의
-type ActionGuide struct {
+type ActionPlan struct {
 	SafetyCategoryName1 string  `json:"safety_cate_nm1"`
 	SafetyCategoryName2 string  `json:"safety_cate_nm2"`
 	SafetyCategoryName3 string  `json:"safety_cate_nm3"`

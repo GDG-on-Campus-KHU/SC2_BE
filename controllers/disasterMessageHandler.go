@@ -31,6 +31,7 @@ func GetDisasterMessagesHandler(context *gin.Context) {
 	})
 }
 
+// AI 모델에 재난 알림 전송
 func SendDisasterMessageController(context *gin.Context) {
 	var request models.DisasterMessage
 
@@ -53,4 +54,6 @@ func SendDisasterMessageController(context *gin.Context) {
 	}
 
 	context.JSON(http.StatusOK, response)
+
+	HandlePushNotification(response, token)
 }
