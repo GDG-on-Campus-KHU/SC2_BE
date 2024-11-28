@@ -20,6 +20,7 @@ func Routes() *gin.Engine {
 	{
 		mapRoutes.GET("/search", controllers.NaverSearchHandler)
 		mapRoutes.GET("/navigation", controllers.GetNavigateHandler)
+		mapRoutes.GET("/delete", controllers.DeleteAllPlacesHandler)
 	}
 
 	// 알림 라우트

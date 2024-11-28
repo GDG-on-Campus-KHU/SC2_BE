@@ -97,7 +97,7 @@ func (c *NavigateClient) GetNavigate(start, goal string) (*Response, error) {
 
     q := req.URL.Query()
     q.Add("start", start)          
-    q.Add("goal", goal)            
+    q.Add("goal", goal)
     q.Add("option", "traoptimal")  
     req.URL.RawQuery = q.Encode()
 
