@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 )
 
 func Routes() *gin.Engine {
@@ -18,8 +19,9 @@ func Routes() *gin.Engine {
 	// map routes group
 	mapRoutes := router.Group("/api/map")
 	{
-		mapRoutes.GET("/search", controllers.QuerySearch)
-		//mapRoutes.GET("/navigation", controllers.QuerySearch)
+		mapRoutes.GET("/search", controllers.NaverSearchHandler)
+		mapRoutes.GET("/navigation", controllers.GetNavigateHandler)
+		mapRoutes.GET("/delete", db.DeleteAllDocument)
 	}
 
 	// 알림 라우트
