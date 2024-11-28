@@ -17,7 +17,7 @@ func Routes() *gin.Engine{
 	// map routes group
 	mapRoutes := router.Group("/api/map")
 	{
-		mapRoutes.GET("/search", controllers.QuerySearch)
+		mapRoutes.GET("/search", controllers.NaverSearchHandler)
 		mapRoutes.GET("/navigation", controllers.GetNavigateHandler)
 	}
 	return router
