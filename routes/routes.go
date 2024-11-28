@@ -24,11 +24,14 @@ func Routes() *gin.Engine {
 		mapRoutes.GET("/delete", db.DeleteAllDocument)
 	}
 
-	// 알림 라우트
-	router.POST("/api/send", controllers.SendNotificationHandler)
-
 	// 재난 알림 문자 라우트
 	router.GET("/api/disaster-messages", controllers.GetDisasterMessagesHandler)
+
+	// AI 모델에 재난 문자 전송하고 응답 받는 라우트
+	router.POST("/api/ai/disaster-messages", controllers.SendDisasterMessageController)
+
+	// 알림 라우트
+	router.POST("/api/send", controllers.SendNotificationHandler)
 
 	return router
 }

@@ -1,12 +1,13 @@
 package controllers
 
 import (
+	"github.com/GDG-on-Campus-KHU/SC2_BE/models"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-// 클라이언트 요청을 처리하기 위한 Handler 함수
+// 재난 안전 문자 api를 통해 응답을 받음
 func GetDisasterMessagesHandler(context *gin.Context) {
 	// 클라이언트가 /disaster-messages 경로를 호출하면 FetchLatestDisasterMessage 를 실행
 	message, err := service.FetchLatestDisasterMessage()
@@ -28,4 +29,28 @@ func GetDisasterMessagesHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"data": message,
 	})
+}
+
+func SendDisasterMessageController(context *gin.Context) {
+	var request models.DisasterMessage
+
+	// 요청 데이터 바인딩
+	if err := context.ShouldBindJSON(&request); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid JSON data", "detail": err.Error(),
+		})
+		return
+	}
+
+	// AI 모델에 데이터 전달
+	response, err := service.SendDisasterMessage(request)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"error":  "Failed to send disaster message",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	context.JSON(http.StatusOK, response)
 }

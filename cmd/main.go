@@ -14,6 +14,7 @@ func main() {
 
 	// Firebase 초기화
 	config.InitFirebase()
+	config.InitEnv()
 
 	// 고루틴 실행
 	// 백그라운드에서 비동기적으로 작업을 처리하면서도 메인 프로그램의 실행을 방해하지 않기 위해서 사용한다.
