@@ -1,0 +1,11 @@
+name: 🛠️ Fix
+description: Describe this issue template's purpose here.
+title: "[FIX] <title>"
+labels: ["Fix"]
+body:
+  - type: textarea
+    attributes:
+      label: Bug Description
+      description: Describe the bug or issue to be fixed.
+    validations:
+      required: true
