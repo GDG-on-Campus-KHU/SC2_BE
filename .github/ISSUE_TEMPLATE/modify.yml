@@ -1,0 +1,11 @@
+name: 📝 Modify
+description: Describe this issue template's purpose here.
+title: "[MODIFY] <title>"
+labels: ["Modify"]
+body:
+  - type: textarea
+    attributes:
+      label: Modification Details
+      description: Provide details about the changes to be made.
+    validations:
+      required: true

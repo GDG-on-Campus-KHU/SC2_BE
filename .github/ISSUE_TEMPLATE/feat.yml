@@ -1,0 +1,11 @@
+name: ✨ Feat
+description: Describe this issue template's purpose here.
+title: "[FEAT] <title>"
+labels: ["Feature"]
+body:
+  - type: textarea
+    attributes:
+      label: Feature Details
+      description: Describe the new feature to be added.
+    validations:
+      required: true

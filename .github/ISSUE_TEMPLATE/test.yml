@@ -1,0 +1,11 @@
+name: ✅ Test
+description: Describe this issue template's purpose here.
+title: "[TEST] <title>"
+labels: ["Test"]
+body:
+  - type: textarea
+    attributes:
+      label: Test Case Description
+      description: Provide details about the test case or scenario.
+    validations:
+      required: true
