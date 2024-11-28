@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 )
 
 func Routes() *gin.Engine {
@@ -20,7 +21,7 @@ func Routes() *gin.Engine {
 	{
 		mapRoutes.GET("/search", controllers.NaverSearchHandler)
 		mapRoutes.GET("/navigation", controllers.GetNavigateHandler)
-		mapRoutes.GET("/delete", controllers.DeleteAllPlacesHandler)
+		mapRoutes.GET("/delete", db.DeleteAllDocument)
 	}
 
 	// 알림 라우트
