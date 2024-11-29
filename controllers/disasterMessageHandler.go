@@ -55,5 +55,5 @@ func SendDisasterMessageController(context *gin.Context) {
 
 	context.JSON(http.StatusOK, response)
 
-	HandlePushNotification(response, token)
+	HandlePushNotification(response)
 }

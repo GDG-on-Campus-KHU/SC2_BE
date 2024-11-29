@@ -43,7 +43,11 @@ func InitEnv() {
 	BaseURL = os.Getenv("BASE_URL")
 	ServiceKey = os.Getenv("SERVICE_KEY")
 
-	if BaseURL == "" || ServiceKey == "" {
-		log.Fatalf("BASE_URL or SERVICE_KEY is not set in environment variables")
+	if BaseURL == "" {
+		log.Fatalf("BASE_URL is not set in environment variables")
+	}
+
+	if ServiceKey == "" {
+		log.Fatalf("SERVICE_KEY is not set in environment variables")
 	}
 }
