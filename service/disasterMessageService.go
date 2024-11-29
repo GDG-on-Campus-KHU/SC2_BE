@@ -107,7 +107,7 @@ func processNewMessage(message *models.DisasterMessage) {
 	}
 
 	// 3. AI 응답 데이터를 푸시 알림으로 처리
-	err = SendNotification(response.PushAlarming)
+	err = SendNotification(response.Results.HotspotResults.PushAlarming)
 	if err != nil {
 		log.Printf("[ERROR] Failed to send push notification: %v", err)
 		return
@@ -124,23 +124,26 @@ func SendDisasterMessage(data models.DisasterMessage) (*models.DisasterGuideResp
 
 	// JSON 요청 전송
 	resp, err := client.R().
-		SetHeader("Content-Type", "application/json"). // 요청 헤더 설정
-		SetBody(data).                                 // 요청 본문으로 데이터 설정
-		SetResult(&models.DisasterGuideResponse{}).    // 응답을 구조체로 자동 디코딩
-		Post(os.Getenv("AI_MODEL_URL"))                // POST 요청 전송
+		SetHeader("Content-Type", "application/json").
+		SetBody(data).
+		Post(os.Getenv("AI_MODEL_URL"))
+
 	if err != nil {
-		// 네트워크 또는 요청 실패 시 에러 반환
 		return nil, fmt.Errorf("failed to send disaster message: %w", err)
 	}
 
 	// HTTP 상태 코드 확인
-	if resp.StatusCode() == 404 {
-		return nil, fmt.Errorf("failed to send disaster message, resource not found (status code: %d)", resp.StatusCode())
-	} else if resp.StatusCode() != 200 {
-		return nil, fmt.Errorf("failed to send disaster message, unexpected status code: %d", resp.StatusCode())
+	if resp.StatusCode() != 200 {
+		log.Printf("[ERROR] Unexpected status code: %d, response body: %s", resp.StatusCode(), resp.String())
+		return nil, fmt.Errorf("failed to send disaster message, status code: %d", resp.StatusCode())
 	}
 
-	// 응답 데이터를 구조체로 반환
-	result := resp.Result().(*models.DisasterGuideResponse)
-	return result, nil
+	// 응답 데이터를 구조체로 디코딩
+	var result models.DisasterGuideResponse
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
+		return nil, fmt.Errorf("failed to parse response JSON into DisasterGuideResponse: %w", err)
+	}
+
+	// 성공적으로 구조체 반환
+	return &result, nil
 }
