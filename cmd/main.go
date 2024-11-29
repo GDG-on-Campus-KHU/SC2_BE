@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/config"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/routes"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/service"
-	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 	"github.com/joho/godotenv"
 	"log"
 )
@@ -14,6 +14,21 @@ func main() {
 
 	// Firebase 초기화
 	config.InitFirebase()
+	config.InitEnv()
+
+	// MongoDB 연결
+	client, err := db.ConnectDB()
+	if err != nil {
+		log.Fatalf("[ERROR] Failed to connect to MongoDB: %v", err)
+	}
+	db.SetMongoClient(client)
+	service.InitTokenCollection(client)
+
+	defer func() {
+		if err := db.DisconnectDB(client); err != nil {
+			log.Printf("[ERROR] Failed to disconnect MongoDB: %v", err)
+		}
+	}()
 
 	// 고루틴 실행
 	// 백그라운드에서 비동기적으로 작업을 처리하면서도 메인 프로그램의 실행을 방해하지 않기 위해서 사용한다.
@@ -21,17 +36,9 @@ func main() {
 	go service.PollForUpdates() // Polling 작업을 비동기로 실행한다.
 
 	// Gin 서버 설정
-	if err := godotenv.Load(); err != nil{
+	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
-	// MongoDB 연결
-    client, err := db.ConnectDB()
-	db.SetMongoClient(client)
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer db.DisconnectDB(client)
 
 	r := routes.Routes()
 	port := 8080

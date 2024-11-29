@@ -2,11 +2,11 @@ package routes
 
 import (
 	"github.com/GDG-on-Campus-KHU/SC2_BE/controllers"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/docs"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/GDG-on-Campus-KHU/SC2_BE/db"
 )
 
 func Routes() *gin.Engine {
@@ -23,12 +23,14 @@ func Routes() *gin.Engine {
 		mapRoutes.GET("/navigation", controllers.GetNavigateHandler)
 		mapRoutes.GET("/delete", db.DeleteAllDocument)
 	}
+	// 토큰 등록
+	router.POST("/api/register-token", controllers.RegisterToken)
 
-	// 알림 라우트
-	router.POST("/api/send", controllers.SendNotificationHandler)
-
-	// 재난 알림 문자 라우트
+	// 재난 알림 문자 api
 	router.GET("/api/disaster-messages", controllers.GetDisasterMessagesHandler)
+
+	// AI 모델에 재난 문자 전송하고 응답 받고 푸시 알림 전송
+	router.POST("/api/ai/disaster-messages", controllers.SendDisasterMessageController)
 
 	return router
 }
