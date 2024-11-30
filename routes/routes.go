@@ -32,7 +32,7 @@ func Routes() *gin.Engine {
 	// AI 모델에 재난 문자 전송하고 응답 받고 푸시 알림 전송
 	router.POST("/api/ai/disaster-messages", controllers.SendDisasterMessageController)
 
-	router.POST("/api/disaster-action-guide", controllers.SendDisasterMessageController)
+	router.POST("/api/disaster-action-guide", controllers.SendDisasterGuideController)
 	// 행동 요령 정보 가져오기
 	//router.GET("/api/action-plan", controllers.GetActionPlanActRmks)
 

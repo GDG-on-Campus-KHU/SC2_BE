@@ -58,7 +58,7 @@ func SendDisasterMessageController(context *gin.Context) {
 }
 
 // SendDisasterMessageController - actRmks 목록 반환 API
-func SendDisasterMessageController(c *gin.Context) {
+func SendDisasterGuideController(c *gin.Context) {
 	var disasterResponse models.DisasterGuideResponse
 
 	// JSON 요청 바디 파싱
