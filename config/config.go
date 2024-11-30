@@ -13,6 +13,7 @@ var (
 	BaseURL       string
 	ServiceKey    string
 	JSONFileRoute string
+	AIModelURL    string
 )
 
 var FirebaseApp *firebase.App
@@ -42,6 +43,8 @@ func InitEnv() {
 	// 환경 변수 로드
 	BaseURL = os.Getenv("BASE_URL")
 	ServiceKey = os.Getenv("SERVICE_KEY")
+	JSONFileRoute = os.Getenv("JSON_FILE_ROUTE")
+	AIModelURL = os.Getenv("AI_MODEL_URL")
 
 	if BaseURL == "" {
 		log.Fatalf("BASE_URL is not set in environment variables")
@@ -49,5 +52,13 @@ func InitEnv() {
 
 	if ServiceKey == "" {
 		log.Fatalf("SERVICE_KEY is not set in environment variables")
+	}
+
+	if JSONFileRoute == "" {
+		log.Fatalf("JSON_FILE_ROUTE is not set in environment variables")
+	}
+
+	if AIModelURL == "" {
+		log.Fatalf("AI_MODEL_URL is not set in environment variables")
 	}
 }

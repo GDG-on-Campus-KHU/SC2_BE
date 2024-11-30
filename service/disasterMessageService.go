@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/GDG-on-Campus-KHU/SC2_BE/config"
 	"github.com/GDG-on-Campus-KHU/SC2_BE/models"
 	"github.com/go-resty/resty/v2"
 	"log"
@@ -10,22 +11,9 @@ import (
 	"time"
 )
 
-const (
-	BaseURL     = "https://www.safetydata.go.kr/V2/api/DSSP-IF-00247"
-	PollingTime = 30 * time.Second
-	// TODO AI URL 값 받아오기
-	AIModelURL = "http://ai-service.example.com/predict" // AI 서버 URL
-)
+const PollingTime = 10 * time.Second
 
 var lastSN string // 마지막으로 처리한 재난 문자의 SN(일련번호)
-
-func GetServiceKey() string {
-	key := os.Getenv("SERVICE_KEY")
-	if key == "" {
-		log.Fatal("SERVICE_KEY is not set in environment variables")
-	}
-	return key
-}
 
 // API를 호출해서 재난 안전 문자 반환
 func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
@@ -35,13 +23,13 @@ func FetchLatestDisasterMessage() (*models.DisasterMessage, error) {
 	resp, err := client.R().
 		SetHeader("Accept", "application/json").
 		SetQueryParams(map[string]string{
-			"serviceKey": GetServiceKey(),
+			"serviceKey": config.ServiceKey,
 			"numOfRows":  "1", // 하나의 데이터만 요청
 			"pageNo":     "1",
 			"returnType": "json",
 			"crtDt":      time.Now().Format("20241127"),
 		}).
-		Get(BaseURL)
+		Get(config.BaseURL)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch data from API: %w", err)
@@ -82,6 +70,12 @@ func PollForUpdates() {
 			log.Printf("Error fetching latest disaster message: %v", err)
 			continue
 		}
+
+		if message == nil {
+			log.Println("[INFO] No new disaster messages available from the API.")
+			continue // message가 nil일 경우 이후 로직 실행하지 않음
+		}
+
 		// 새 메시지가 없는 경우
 		if message.SN == lastSN {
 			log.Println("No new updates.")
@@ -113,7 +107,14 @@ func processNewMessage(message *models.DisasterMessage) {
 	}
 
 	// 3. AI 응답 데이터를 푸시 알림으로 처리
-	SendNotification(response.PushAlarming)
+	err = SendNotification(response.Results.HotspotResults.PushAlarming)
+	if err != nil {
+		log.Printf("[ERROR] Failed to send push notification: %v", err)
+		return
+	}
+
+	log.Println("[INFO] Push notification sent successfully.")
+
 }
 
 // AI 모델에 재난 문자 request로 전송
@@ -123,21 +124,26 @@ func SendDisasterMessage(data models.DisasterMessage) (*models.DisasterGuideResp
 
 	// JSON 요청 전송
 	resp, err := client.R().
-		SetHeader("Content-Type", "application/json"). // 요청 헤더 설정
-		SetBody(data).                                 // 요청 본문으로 데이터 설정
-		SetResult(&models.DisasterGuideResponse{}).    // 응답을 구조체로 자동 디코딩
-		Post(AIModelURL)                               // POST 요청 전송
+		SetHeader("Content-Type", "application/json").
+		SetBody(data).
+		Post(os.Getenv("AI_MODEL_URL"))
+
 	if err != nil {
-		// 네트워크 또는 요청 실패 시 에러 반환
 		return nil, fmt.Errorf("failed to send disaster message: %w", err)
 	}
 
 	// HTTP 상태 코드 확인
 	if resp.StatusCode() != 200 {
+		log.Printf("[ERROR] Unexpected status code: %d, response body: %s", resp.StatusCode(), resp.String())
 		return nil, fmt.Errorf("failed to send disaster message, status code: %d", resp.StatusCode())
 	}
 
-	// 응답 데이터를 구조체로 반환
-	result := resp.Result().(*models.DisasterGuideResponse)
-	return result, nil
+	// 응답 데이터를 구조체로 디코딩
+	var result models.DisasterGuideResponse
+	if err := json.Unmarshal(resp.Body(), &result); err != nil {
+		return nil, fmt.Errorf("failed to parse response JSON into DisasterGuideResponse: %w", err)
+	}
+
+	// 성공적으로 구조체 반환
+	return &result, nil
 }

@@ -28,7 +28,7 @@ func HandlePushNotification(response *models.DisasterGuideResponse) {
 	}
 
 	// 푸시 알림 전송
-	err := service.SendNotification(response.PushAlarming)
+	err := service.SendNotification(response.Results.HotspotResults.PushAlarming)
 	if err != nil {
 		log.Printf("Failed to send push notification: %v", err)
 	} else {
