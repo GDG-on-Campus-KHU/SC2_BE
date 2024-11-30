@@ -147,3 +147,14 @@ func SendDisasterMessage(data models.DisasterMessage) (*models.DisasterGuideResp
 	// 성공적으로 구조체 반환
 	return &result, nil
 }
+
+func GetActRmksList(response models.DisasterGuideResponse) []string {
+	var actRmksList []string
+
+	// action_plan 순회하며 actRmks 값을 수집
+	for _, action := range response.Results.HotspotResults.ActionPlan {
+		actRmksList = append(actRmksList, action.ActRmks)
+	}
+
+	return actRmksList
+}

@@ -56,3 +56,24 @@ func SendDisasterMessageController(context *gin.Context) {
 	context.JSON(http.StatusOK, response)
 	HandlePushNotification(response)
 }
+
+// SendDisasterMessageController - actRmks 목록 반환 API
+func SendDisasterMessageController(c *gin.Context) {
+	var disasterResponse models.DisasterGuideResponse
+
+	// JSON 요청 바디 파싱
+	if err := c.ShouldBindJSON(&disasterResponse); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid JSON input",
+		})
+		return
+	}
+
+	// actRmks 목록 가져오기
+	actRmksList := service.GetActRmksList(disasterResponse)
+
+	// 응답 반환
+	c.JSON(http.StatusOK, gin.H{
+		"actRmksList": actRmksList,
+	})
+}
